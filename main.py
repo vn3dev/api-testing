@@ -1,24 +1,38 @@
+import json
 import requests
 from datetime import datetime
 
-lat = float(input("lat: "))
-lon = float(input("lon: "))
+with open("municipios.json", "r", encoding="utf-8-sig") as arquivo:
+    municipios = json.load(arquivo)
 
-url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m&forecast_days=1"
+nome_busca = input("nome do municipio: ").strip().lower()
 
-response = requests.get(url)
-data = response.json()
+municipio_encontrado = None
 
-# hora atual
-now = datetime.now().strftime("%Y-%m-%dT%H:00")
+for municipio in municipios:
+    if municipio["nome"].lower() == nome_busca:
+        municipio_encontrado = municipio
+        break
 
-times = data["hourly"]["time"]
-temps = data["hourly"]["temperature_2m"]
+if municipio_encontrado:
+    lat = municipio_encontrado["latitude"]
+    lon = municipio_encontrado["longitude"]
 
-# encontra indice da hora atual
-index = times.index(now)
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m&forecast_days=1&timezone=auto"
+    response = requests.get(url)
+    data = response.json()
 
-# temperatura correspondente
-current_temp = temps[index]
+    hora_atual = datetime.now().strftime("%Y-%m-%dT%H:00")
+    times = data["hourly"]["time"]
+    temps = data["hourly"]["temperature_2m"]
 
-print("temp atual:", current_temp, "C")
+    if hora_atual in times:
+        indice = times.index(hora_atual)
+        temperatura = temps[indice]
+
+        print(f"municipio: {municipio_encontrado['nome']}")
+        print(f"temp atual: {temperatura} C")
+    else:
+        print("nao encontrado")
+else:
+    print("nao encontrado")
