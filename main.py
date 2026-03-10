@@ -1,6 +1,5 @@
 import json
 import requests
-from datetime import datetime
 
 with open("municipios.json", "r", encoding="utf-8-sig") as arq:
     municipios = json.load(arq)
@@ -32,7 +31,7 @@ else:
         lat = municipio_encontrado["latitude"]
         lon = municipio_encontrado["longitude"]
 
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m&forecast_days=1&timezone=auto"
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m&forecast_days=1&timezone=auto&current_weather=true"
 
         try:
             response = requests.get(url, timeout=10)
@@ -42,7 +41,7 @@ else:
             print(f"Erro ao consultar a API: {e}")
             exit()
 
-        hora_atual = datetime.now().strftime("%Y-%m-%dT%H:00")
+        hora_atual = data["current_weather"]["time"]
         times = data["hourly"]["time"]
         temps = data["hourly"]["temperature_2m"]
 
