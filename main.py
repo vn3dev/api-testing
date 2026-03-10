@@ -33,8 +33,14 @@ else:
         lon = municipio_encontrado["longitude"]
 
         url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m&forecast_days=1&timezone=auto"
-        response = requests.get(url)
-        data = response.json()
+
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+        except requests.RequestException as e:
+            print(f"Erro ao consultar a API: {e}")
+            exit()
 
         hora_atual = datetime.now().strftime("%Y-%m-%dT%H:00")
         times = data["hourly"]["time"]
