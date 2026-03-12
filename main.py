@@ -10,15 +10,11 @@ with open("estados.json", "r", encoding="utf-8-sig") as arq:
 nome_municipio = input("digite o municipio: ").strip().lower()
 uf_digitada = input("digite a UF: ").strip().upper()
 
-print("municipio digitado:", repr(nome_municipio))
-print("uf digitada:", repr(uf_digitada))
-
 codigo_uf = None
 
 for estado in estados:
     if estado["uf"].upper() == uf_digitada:
         codigo_uf = estado["codigo_uf"]
-        print("codigo_uf encontrado:", codigo_uf)
         break
 
 if codigo_uf is None:
@@ -32,8 +28,6 @@ else:
             break
 
     if municipio_encontrado:
-        print("municipio encontrado no json:", municipio_encontrado["nome"])
-
         lat = municipio_encontrado["latitude"]
         lon = municipio_encontrado["longitude"]
 
@@ -58,6 +52,6 @@ else:
         print(f"\nmunicipio: {municipio_encontrado['nome']} - {uf_digitada}")
         print(f"lat: {lat}")
         print(f"lon: {lon}")
-        print(f"temp atual: {temperatura} C")
+        print(f"temp atual: {temperatura}")
     else:
         print("municio não encontrado nessa UF")
